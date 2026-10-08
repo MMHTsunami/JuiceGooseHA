@@ -1,0 +1,10 @@
+{
+  "domain": "juicegoose_ip1515",
+  "name": "Juice Goose IP 15-15",
+  "codeowners": ["@MMHTsunami"],
+  "config_flow": true,
+  "documentation": "https://github.com/MMHTsunami/JuiceGooseHA",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}
