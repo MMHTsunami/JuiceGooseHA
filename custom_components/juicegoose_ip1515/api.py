@@ -46,12 +46,26 @@ class JuiceGooseInvalidResponseError(JuiceGooseApiError):
 	"""Raised when the controller returns malformed or incomplete status XML."""
 
 
+class JuiceGooseAuthError(JuiceGooseApiError):
+	"""Raised when the controller rejects the supplied credentials."""
+
+
 class JuiceGooseApi:
 	"""Communicate with an IP-series controller over its HTTP API."""
 
-	def __init__(self, host: str, port: int, session: aiohttp.ClientSession) -> None:
+	def __init__(
+		self,
+		host: str,
+		port: int,
+		session: aiohttp.ClientSession,
+		username: str | None = None,
+		password: str = "",
+	) -> None:
 		self._base_url = URL.build(scheme="http", host=host, port=port)
 		self._session = session
+		self._auth = (
+			aiohttp.BasicAuth(username, password) if username is not None else None
+		)
 
 	async def async_get_status(self) -> JuiceGooseStatus:
 		"""Fetch and parse POD, sequence, and manual override states."""
@@ -104,10 +118,22 @@ class JuiceGooseApi:
 			async with self._session.get(
 				url,
 				params=params,
+				auth=self._auth,
 				timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
 			) as response:
+				if response.status == 401:
+					challenge = response.headers.get(
+						"WWW-Authenticate", "not provided"
+					)
+					_LOGGER.error(
+						"Controller rejected HTTP credentials; auth challenge: %s",
+						challenge,
+					)
+					raise JuiceGooseAuthError("Controller rejected credentials")
 				response.raise_for_status()
 				return await response.text()
+		except JuiceGooseAuthError:
+			raise
 		except (aiohttp.ClientError, TimeoutError) as err:
 			_LOGGER.error("Request to Juice Goose controller failed: %s", err)
 			raise JuiceGooseApiError("Unable to communicate with controller") from err

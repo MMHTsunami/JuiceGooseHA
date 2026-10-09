@@ -6,16 +6,36 @@
         "description": "Enter the controller's IP address or hostname and HTTP port.",
         "data": {
           "host": "Host",
-          "port": "Port"
+          "port": "Port",
+          "username": "HTTP username",
+          "password": "HTTP password"
         }
       }
     },
     "error": {
       "cannot_connect": "Unable to connect to the controller.",
-      "invalid_response": "The host did not return a valid Juice Goose status document."
+      "invalid_response": "The host did not return a valid Juice Goose status document.",
+      "invalid_auth": "The controller rejected these credentials."
     },
     "abort": {
       "already_configured": "This controller is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Controller authentication",
+        "description": "Enter the HTTP username and password configured on the controller.",
+        "data": {
+          "username": "HTTP username",
+          "password": "HTTP password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the controller.",
+      "invalid_response": "The controller returned an invalid status document.",
+      "invalid_auth": "The controller rejected these credentials."
     }
   }
 }
