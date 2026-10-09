@@ -6,7 +6,7 @@ from homeassistant.const import Platform
 
 DOMAIN = "juicegoose_ip1515"
 DEFAULT_PORT = 80
-DEFAULT_SCAN_INTERVAL = timedelta(seconds=30)
+DEFAULT_SCAN_INTERVAL = timedelta(seconds=3)
 PLATFORMS = (Platform.SWITCH, Platform.BINARY_SENSOR, Platform.BUTTON)
 
 POD_NAMES: dict[int, str] = {pod: f"POD {pod}" for pod in range(1, 4)}
